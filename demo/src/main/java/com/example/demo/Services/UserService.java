@@ -1,48 +1,61 @@
 package com.example.demo.Services;
 
 import com.example.demo.DTOs.RequestDto.UserDto;
+import com.example.demo.DTOs.ResponseDto.UserResponseDto;
 import com.example.demo.Exceptions.UserNotFound;
 import com.example.demo.Models.User;
 import com.example.demo.Repositories.UserRepository;
 import com.example.demo.Transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserService {
+
     @Autowired
-    private UserRepository userRepository;
-    public String addUser(UserDto userDto) {
-        User user= UserTransformer.UserDtoToEntity(userDto);
+    UserRepository userRepository;
+
+    public String addUser(UserDto userDto){
+
+        User user = UserTransformer.convertDtoToEntity(userDto);
         userRepository.save(user);
-        return "User has been added Succesfully:";
+
+        return "User has been added successfully ";
     }
 
-    public UserDto getOldestUser() throws UserNotFound {
-        List<User> userList=userRepository.findAll();
-        int max=0;
-        User oldestUser=null;
-        for (User user:userList){
-            if (max<user.getAge()){
-                max=user.getAge();
-                oldestUser=user;
+    public UserResponseDto getOldestUser()throws UserNotFound {
+        //Prevent you from exposing the PK
+        //Prevents Infinite recursion incase it occurs
+        List<User> users = userRepository.findAll();
+        Integer maxAge = 0;
+
+        User userAns = null;
+
+        for(User user: users)
+        {
+            if(user.getAge()>maxAge){
+                maxAge = user.getAge();
+                userAns = user;
             }
         }
-        if (oldestUser==null){
-            throw new UserNotFound("There is no users in Our DataBase ");
+
+        if(userAns==null){
+            throw new UserNotFound("No user Found");
         }
 
-        UserDto userDto=UserTransformer.UserDtoToEntity(oldestUser);
-        return userDto;
+        //We need to transform the UserEntity to the userResponse
+        UserResponseDto userResponseDto = UserTransformer.convertEntityToDto(userAns);
+
+        return userResponseDto;
     }
 
-    public List<UserDto> userGreaterThanAge(Integer age) {
-        List<User> userList=userRepository.userGreaterThanAge(age);
+    public List<User> getAllUserGreaterThan(Integer age){
 
-        List<UserDto> userDtos=new ArrayList<>();
-        for (User user:userList){
-            userDtos.add(UserTransformer.UserEntityToDto(user));
-        }
-        return userDtos;
+        List<User> users = userRepository.findUserWithAgeGreater(age);
+        return users;
+
     }
+
 }

@@ -13,9 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class TicketDto {
 
-    private Integer showId;
+    private int showId;
 
-    private Integer userId;
+    private int userId;
 
-    private List<String> reqSeatList;
+    private List<String> requestedSeats;
 }

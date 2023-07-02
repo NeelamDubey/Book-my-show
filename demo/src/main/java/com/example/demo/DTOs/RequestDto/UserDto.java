@@ -14,7 +14,7 @@ public class UserDto {
 
     private String name;
     private Integer age;
-    private String mobileNo;
+    private String mobNo;
     private String emailId;
 
 }

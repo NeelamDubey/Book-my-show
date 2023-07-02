@@ -2,10 +2,12 @@ package com.example.demo.Services;
 
 
 
+import com.example.demo.DTOs.RequestDto.TicketDto;
 import com.example.demo.DTOs.ResponseDto.TicketReqDto;
 import com.example.demo.Exceptions.ShowNotFound;
 import com.example.demo.Exceptions.UserNotFound;
 import com.example.demo.Models.Show;
+import com.example.demo.Models.Showseat;
 import com.example.demo.Models.Ticket;
 import com.example.demo.Models.User;
 import com.example.demo.Repositories.ShowRepository;
@@ -34,11 +36,11 @@ public class TicketService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public TicketReqDto bookTicket(TicketReqDto ticketRequestDto)throws UserNotFound, ShowNotFound {
+    public TicketReqDto bookTicket(TicketDto ticketRequestDto) throws Exception {
 
         //User validation
         int userId = ticketRequestDto.getUserId();
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional=userRepository.findById(userId);
         if(!userOptional.isPresent()){
             throw new UserNotFound("User Id is incorrect");
         }
@@ -94,9 +96,9 @@ public class TicketService {
         String body = "Hi "+user.getName()+" ! \n"+
                 "You have successfully booked a ticket. Please find the following details"+
                 "booked seat No's"  + bookedSeats
-                +"movie Name" + show.getMovie().getMovieName()
-                +"show Date is "+show.getDate()+
-                "And show time is "+show.getTime()+
+                +"movie Name" + show.getMovie().getName()
+                +"show Date is "+show.getShowDate()+
+                "And show time is "+show.getShowTime()+
                 "Enjoy the Show !!!";
 
         simpleMessageMail.setSubject("Ticket Confirmation Mail");
@@ -112,9 +114,9 @@ public class TicketService {
 
     private boolean validateShowAvailability(Show show, List<String> requestedSeats){
 
-        List<ShowSeat> showSeatList = show.getShowSeatList();
+        List<Showseat> showSeatList = show.getShowseatList();
 
-        for(ShowSeat showSeat : showSeatList){
+        for(Showseat showSeat : showSeatList){
             String seatNo = showSeat.getSeatNo();
             if(requestedSeats.contains(seatNo)){
 
@@ -130,9 +132,9 @@ public class TicketService {
 
         int totalPrice = 0;
 
-        List<ShowSeat> showSeatList = show.getShowSeatList();
+        List<Showseat> showSeatList = show.getShowseatList();
 
-        for(ShowSeat showSeat : showSeatList){
+        for(Showseat showSeat : showSeatList){
 
             if(requestedSeats.contains(showSeat.getSeatNo())){
                 totalPrice = totalPrice + showSeat.getPrice();
@@ -152,15 +154,15 @@ public class TicketService {
         return result;
     }
 
-    private TicketDto createTicketReponseDto(Show show,Ticket ticket){
+    private TicketReqDto createTicketReponseDto(Show show, Ticket ticket){
 
-        TicketDto ticketResponseDto = TicketDto.builder()
+        TicketReqDto ticketResponseDto = TicketReqDto.builder()
                 .bookedSeats(ticket.getBookedSeats())
                 .location(show.getTheater().getLocation())
                 .theaterName(show.getTheater().getName())
-                .movieName(show.getMovie().getMovieName())
-                .showDate(show.getDate())
-                .showTime(show.getTime())
+                .movieName(show.getMovie().getName())
+                .showDate(show.getShowDate())
+                .showTime(show.getShowTime())
                 .totalPrice(ticket.getTotalTicketsPrice())
                 .build();
 

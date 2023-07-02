@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class Show {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String showTime;
+    private LocalTime showTime;
     private Date showDate;
 
 

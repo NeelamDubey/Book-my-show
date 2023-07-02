@@ -18,21 +18,21 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer totalPrice;
+    private int totalTicketsPrice;
 
     private String bookedSeats;
 
     @CreationTimestamp
     private Date bookedAt;
 
+
     @ManyToOne
     @JoinColumn
     private Show show;
+
 
     @ManyToOne
     @JoinColumn
     private User user;
 
-    public void setTotalTicketsPrice(int totalPrice) {
-    }
 }

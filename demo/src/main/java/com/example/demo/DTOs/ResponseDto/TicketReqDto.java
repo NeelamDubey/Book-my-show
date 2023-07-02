@@ -5,25 +5,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class TicketReqDto {
 
-    private String showTime;
+    private String responseMessage;
 
-    private Date date;
+    private LocalTime showTime;
+    private Date showDate;
 
     private String movieName;
 
     private String theaterName;
 
-    private String bookedSeat;
+    private String bookedSeats;
 
-    public List<String> getRequestedSeats() {
-    }
+    private String location;
+
+    private int totalPrice;
 }

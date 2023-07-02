@@ -22,9 +22,9 @@ public class User {
     private String name;
 
     @Column(unique = true)
-    private String emailId;
+    private String email;
 
-    private String mobileNo;
+    private String mobNo;
 
     private Integer age;
 
